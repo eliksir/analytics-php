@@ -22,6 +22,6 @@
     "phpunit/phpunit": "~4.0"
   },
   "autoload": {
-    "files": ["lib/Segment.php"]
+    "files": ["lib/SegmentIo.php"]
   }
 }

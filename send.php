@@ -4,7 +4,7 @@
  * require client
  */
 
-require(__DIR__ . "/lib/Segment.php");
+require(__DIR__ . "/lib/SegmentIo.php");
 
 /**
  * Args
@@ -52,7 +52,7 @@ $lines = explode("\n", $contents);
  * Initialize the client.
  */
 
-Segment::init($args["secret"], array(
+SegmentIo::init($args["secret"], array(
   "debug" => true,
   "error_handler" => function($code, $msg){
     print("$code: $msg\n");
@@ -73,13 +73,13 @@ foreach ($lines as $line) {
   $ts = floatval($dt->getTimestamp() . "." . $dt->format("u"));
   $payload["timestamp"] = $ts;
   $type = $payload["type"];
-  $ret = call_user_func_array(array("Segment", $type), array($payload));
+  $ret = call_user_func_array(array("SegmentIo", $type), array($payload));
   if ($ret) $successful++;
   $total++;
-  if ($total % 100 === 0) Segment::flush();
+  if ($total % 100 === 0) SegmentIo::flush();
 }
 
-Segment::flush();
+SegmentIo::flush();
 unlink($file);
 
 /**

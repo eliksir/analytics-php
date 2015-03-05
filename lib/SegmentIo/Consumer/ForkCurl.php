@@ -1,6 +1,6 @@
 <?php
 
-class Segment_Consumer_ForkCurl extends Segment_QueueConsumer {
+class SegmentIo_Consumer_ForkCurl extends SegmentIo_QueueConsumer {
 
   protected $type = "ForkCurl";
 

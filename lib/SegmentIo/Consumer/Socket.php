@@ -1,6 +1,6 @@
 <?php
 
-class Segment_Consumer_Socket extends Segment_QueueConsumer {
+class SegmentIo_Consumer_Socket extends SegmentIo_QueueConsumer {
 
   protected $type = "Socket";
   private $socket_failed;

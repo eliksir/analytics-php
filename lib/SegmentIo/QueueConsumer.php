@@ -1,5 +1,5 @@
 <?php
-abstract class Segment_QueueConsumer extends Segment_Consumer {
+abstract class SegmentIo_QueueConsumer extends SegmentIo_Consumer {
 
   protected $type = "QueueConsumer";
 
@@ -132,7 +132,7 @@ abstract class Segment_QueueConsumer extends Segment_Consumer {
   /**
    * Given a batch of messages the method returns
    * a valid payload.
-   * 
+   *
    * @param {Array} batch
    * @return {Array}
    **/

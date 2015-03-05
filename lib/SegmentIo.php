@@ -4,10 +4,10 @@ if (!function_exists('json_encode')) {
     throw new Exception('Segment needs the JSON PHP extension.');
 }
 
-require(dirname(__FILE__) . '/Segment/Client.php');
+require(dirname(__FILE__) . '/SegmentIo/Client.php');
 
 
-class Segment {
+class SegmentIo {
 
   private static $client;
 
@@ -17,8 +17,8 @@ class Segment {
    * @param  array  $options  passed straight to the client
    */
   public static function init($secret, $options = array()) {
-    self::assert($secret, "Segment::init() requires secret");
-    self::$client = new Segment_Client($secret, $options);
+    self::assert($secret, "SegmentIo::init() requires secret");
+    self::$client = new SegmentIo_Client($secret, $options);
   }
 
   /**
@@ -30,7 +30,7 @@ class Segment {
   public static function track(array $message) {
     self::checkClient();
     $event = !empty($message["event"]);
-    self::assert($event, "Segment::track() expects an event");
+    self::assert($event, "SegmentIo::track() expects an event");
     self::validate($message, "track");
     return self::$client->track($message);
   }
@@ -58,7 +58,7 @@ class Segment {
     self::checkClient();
     $groupId = !empty($message["groupId"]);
     $userId = !empty($message["userId"]);
-    self::assert($groupId && $userId, "Segment::group() expects userId and groupId");
+    self::assert($groupId && $userId, "SegmentIo::group() expects userId and groupId");
     return self::$client->group($message);
   }
 
@@ -96,7 +96,7 @@ class Segment {
     self::checkClient();
     $userId = !empty($message["userId"]);
     $previousId = !empty($message["previousId"]);
-    self::assert($userId && $previousId, "Segment::alias() requires both userId and previousId");
+    self::assert($userId && $previousId, "SegmentIo::alias() requires both userId and previousId");
     return self::$client->alias($message);
   }
 
@@ -109,7 +109,7 @@ class Segment {
   public static function validate($msg, $type){
     $userId = !empty($msg["userId"]);
     $anonId = !empty($msg["anonymousId"]);
-    self::assert($userId || $anonId, "Segment::$type() requires userId or anonymousId");
+    self::assert($userId || $anonId, "SegmentIo::$type() requires userId or anonymousId");
   }
 
   /**

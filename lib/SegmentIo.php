@@ -128,7 +128,7 @@ class SegmentIo {
    */
   private static function checkClient(){
     if (null != self::$client) return;
-    throw new Exception("Analytics::init() must be called before any other tracking method.");
+    throw new Exception("SegmentIo::init() must be called before any other tracking method.");
   }
 
   /**

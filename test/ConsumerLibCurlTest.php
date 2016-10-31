@@ -2,30 +2,30 @@
 
 require_once(dirname(__FILE__) . "/../lib/SegmentIo/Client.php");
 
-class ConsumerForkCurlTest extends PHPUnit_Framework_TestCase {
+class ConsumerLibCurlTest extends PHPUnit_Framework_TestCase {
 
   private $client;
 
   function setUp() {
     date_default_timezone_set("UTC");
     $this->client = new SegmentIo_Client("oq0vdlg7yi",
-                          array("consumer" => "fork_curl",
+                          array("consumer" => "lib_curl",
                                 "debug"    => true));
   }
 
   function testTrack() {
-    $this->assertTrue($this->client->track(array(
-      "userId" => "some-user",
-      "event" => "PHP Fork Curl'd\" Event"
-    )));
+      $this->assertTrue($this->client->track(array(
+        "userId" => "lib-curl-track",
+        "event" => "PHP Lib Curl'd\" Event"
+      )));
   }
 
   function testIdentify() {
     $this->assertTrue($this->client->identify(array(
-      "userId" => "user-id",
+      "userId" => "lib-curl-identify",
       "traits"  => array(
         "loves_php" => false,
-        "type" => "consumer fork-curl test",
+        "type" => "consumer lib-curl test",
         "birthday" => time()
       )
     )));
@@ -33,17 +33,17 @@ class ConsumerForkCurlTest extends PHPUnit_Framework_TestCase {
 
   function testGroup(){
     $this->assertTrue($this->client->group(array(
-      "userId" => "user-id",
+      "userId" => "lib-curl-group",
       "groupId" => "group-id",
       "traits" => array(
-        "type" => "consumer fork-curl test"
+        "type" => "consumer lib-curl test"
       )
     )));
   }
 
   function testPage(){
     $this->assertTrue($this->client->page(array(
-      "userId" => "userId",
+      "userId" => "lib-curl-page",
       "name" => "analytics-php",
       "category" => "fork-curl",
       "properties" => array(
@@ -54,7 +54,7 @@ class ConsumerForkCurlTest extends PHPUnit_Framework_TestCase {
 
   function testScreen(){
     $this->assertTrue($this->client->page(array(
-      "anonymousId" => "anonymous-id",
+      "anonymousId" => "lib-curl-screen",
       "name" => "grand theft auto",
       "category" => "fork-curl",
       "properties" => array()
@@ -64,9 +64,10 @@ class ConsumerForkCurlTest extends PHPUnit_Framework_TestCase {
 
   function testAlias() {
     $this->assertTrue($this->client->alias(array(
-      "previousId" => "previous-id",
+      "previousId" => "lib-curl-alias",
       "userId" => "user-id"
     )));
   }
 }
+
 ?>

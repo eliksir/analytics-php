@@ -4,17 +4,13 @@ require(__DIR__ . '/Consumer.php');
 require(__DIR__ . '/QueueConsumer.php');
 require(__DIR__ . '/Consumer/File.php');
 require(__DIR__ . '/Consumer/ForkCurl.php');
+require(__DIR__ . '/Consumer/LibCurl.php');
 require(__DIR__ . '/Consumer/Socket.php');
+require(__DIR__ . '/Version.php');
 
 class SegmentIo_Client {
 
-  /**
-   * VERSION
-   */
-
-  const VERSION = "1.1.3";
-
-  private $consumer;
+  protected $consumer;
 
   /**
    * Create a new analytics object with your app's secret
@@ -29,12 +25,13 @@ class SegmentIo_Client {
     $consumers = array(
       "socket"     => "SegmentIo_Consumer_Socket",
       "file"       => "SegmentIo_Consumer_File",
-      "fork_curl"  => "SegmentIo_Consumer_ForkCurl"
+      "fork_curl"  => "SegmentIo_Consumer_ForkCurl",
+      "lib_curl"   => "SegmentIo_Consumer_LibCurl"
     );
 
     # Use our socket consumer by default
     $consumer_type = isset($options["consumer"]) ? $options["consumer"] :
-                                                   "socket";
+                                                   "lib_curl";
     $Consumer = $consumers[$consumer_type];
 
     $this->consumer = new $Consumer($secret, $options);
@@ -118,10 +115,13 @@ class SegmentIo_Client {
 
   /**
    * Flush any async consumers
+   * @return boolean true if flushed successfully
    */
   public function flush() {
-    if (!method_exists($this->consumer, 'flush')) return;
-    $this->consumer->flush();
+    if (method_exists($this->consumer, 'flush')) {
+      return $this->consumer->flush();
+    }
+    return true;
   }
 
   /**
@@ -139,11 +139,17 @@ class SegmentIo_Client {
    */
   private function formatTime($ts) {
     // time()
-    if ($ts == null) $ts = time();
-    if (is_integer($ts)) return date("c", $ts);
+    if ($ts == null || !$ts) $ts = time();
+    if (filter_var($ts, FILTER_VALIDATE_INT) !== false) return date("c", (int) $ts);
 
-    // anything else return a new date.
-    if (!is_float($ts)) return date("c");
+    // anything else try to strtotime the date.
+    if (filter_var($ts, FILTER_VALIDATE_FLOAT) === false) {
+      if (is_string($ts)) {
+        return date("c", strtotime($ts));
+      } else {
+        return date("c");
+      }
+    }
 
     // fix for floatval casting in send.php
     $parts = explode(".", (string)$ts);
@@ -200,10 +206,11 @@ class SegmentIo_Client {
    * @return array additional context
    */
   private function getContext () {
+    global $SEGMENT_VERSION;
     return array(
       "library" => array(
         "name" => "analytics-php",
-        "version" => self::VERSION
+        "version" => $SEGMENT_VERSION
       )
     );
   }

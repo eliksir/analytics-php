@@ -1,6 +1,6 @@
 <?php
 
-require_once(dirname(__FILE__) . "/../lib/Segment.php");
+require_once(dirname(__FILE__) . "/../lib/SegmentIo.php");
 
 class AnalyticsTest extends PHPUnit_Framework_TestCase {
 
@@ -140,6 +140,50 @@ class AnalyticsTest extends PHPUnit_Framework_TestCase {
     $this->assertTrue(SegmentIo::alias(array(
       "previousId" => "previous-id",
       "userId" => "user-id"
+    )));
+  }
+
+  function testTimestamps() {
+    $this->assertTrue(SegmentIo::track(array(
+      "userId" => "user-id",
+      "event" => "integer-timestamp",
+      "timestamp" => (int) mktime(0, 0, 0, date('n'), 1, date('Y'))
+    )));
+
+    $this->assertTrue(SegmentIo::track(array(
+      "userId" => "user-id",
+      "event" => "string-integer-timestamp",
+      "timestamp" => (string) mktime(0, 0, 0, date('n'), 1, date('Y'))
+    )));
+
+    $this->assertTrue(SegmentIo::track(array(
+      "userId" => "user-id",
+      "event" => "iso8630-timestamp",
+      "timestamp" => date(DATE_ATOM, mktime(0, 0, 0, date('n'), 1, date('Y')))
+    )));
+
+    $this->assertTrue(SegmentIo::track(array(
+      "userId" => "user-id",
+      "event" => "iso8601-timestamp",
+      "timestamp" => date(DATE_ATOM, mktime(0, 0, 0, date('n'), 1, date('Y')))
+    )));
+
+    $this->assertTrue(SegmentIo::track(array(
+      "userId" => "user-id",
+      "event" => "strtotime-timestamp",
+      "timestamp" => strtotime('1 week ago')
+    )));
+
+    $this->assertTrue(SegmentIo::track(array(
+      "userId" => "user-id",
+      "event" => "microtime-timestamp",
+      "timestamp" => microtime(true)
+    )));
+
+    $this->assertTrue(SegmentIo::track(array(
+      "userId" => "user-id",
+      "event" => "invalid-float-timestamp",
+      "timestamp" => ((string) mktime(0, 0, 0, date('n'), 1, date('Y'))) . '.'
     )));
   }
 }

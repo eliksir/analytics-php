@@ -16,7 +16,7 @@ class SegmentIo_Consumer_Socket extends SegmentIo_QueueConsumer {
   public function __construct($secret, $options = array()) {
 
     if (!isset($options["timeout"]))
-      $options["timeout"] = 0.5;
+      $options["timeout"] = 5;
 
     if (!isset($options["host"]))
       $options["host"] = "api.segment.io";
@@ -56,7 +56,7 @@ class SegmentIo_Consumer_Socket extends SegmentIo_QueueConsumer {
                            $errstr, $timeout);
 
       # If we couldn't open the socket, handle the error.
-      if ($errno != 0) {
+      if (false === $socket) {
         $this->handleError($errno, $errstr);
         $this->socket_failed = true;
         return false;
@@ -121,6 +121,14 @@ class SegmentIo_Consumer_Socket extends SegmentIo_QueueConsumer {
         $this->handleError($res["status"], $res["message"]);
         $success = false;
       }
+    } else {
+      // we have to read from the socket to avoid getting into
+      // states where the socket doesn't properly re-open.
+      // as long as we keep the recv buffer empty, php will
+      // properly reconnect
+      stream_set_timeout($socket, 0, 50000);
+      fread($socket, 2048);
+      stream_set_timeout($socket, 5);
     }
 
     return $success;

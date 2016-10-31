@@ -1,6 +1,6 @@
 <?php
 
-require_once(dirname(__FILE__) . "/../lib/Segment/Client.php");
+require_once(dirname(__FILE__) . "/../lib/SegmentIo/Client.php");
 
 class ConsumerFileTest extends PHPUnit_Framework_TestCase {
 
@@ -12,7 +12,7 @@ class ConsumerFileTest extends PHPUnit_Framework_TestCase {
     if (file_exists($this->filename()))
       unlink($this->filename());
 
-    $this->client = new Segment_Client("oq0vdlg7yi",
+    $this->client = new SegmentIo_Client("oq0vdlg7yi",
                           array("consumer" => "file",
                                 "filename" => $this->filename));
 
@@ -66,7 +66,7 @@ class ConsumerFileTest extends PHPUnit_Framework_TestCase {
   }
 
   function testScreen(){
-    $this->assertTrue($this->client->page(array(
+    $this->assertTrue($this->client->screen(array(
       "userId" => "userId",
       "name" => "grand theft auto",
       "category" => "analytics.log",
@@ -94,19 +94,9 @@ class ConsumerFileTest extends PHPUnit_Framework_TestCase {
     $this->assertFalse(file_exists($this->filename()));
   }
 
-  function testError(){
-    $this->client->track(array(
-      "userId" => "userId",
-      "event" => "event"
-    ));
-    exec("php --define date.timezone=UTC send.php --secret invalid-key --file /tmp/analytics.log", $output);
-    $this->assertEquals('400: {"message":"You must authenticate with a valid `writeKey`.","code":"invalid_request_error"}', trim($output[0]));
-    $this->assertFalse(file_exists($this->filename()));
-  }
-
   function testProductionProblems() {
     # Open to a place where we should not have write access.
-    $client = new Segment_Client("oq0vdlg7yi",
+    $client = new SegmentIo_Client("oq0vdlg7yi",
                           array("consumer" => "file",
                                 "filename" => "/dev/xxxxxxx" ));
 

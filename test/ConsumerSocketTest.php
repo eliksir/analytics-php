@@ -1,6 +1,6 @@
 <?php
 
-require_once(dirname(__FILE__) . "/../lib/Segment/Client.php");
+require_once(dirname(__FILE__) . "/../lib/SegmentIo/Client.php");
 
 class ConsumerSocketTest extends PHPUnit_Framework_TestCase {
 
@@ -8,7 +8,7 @@ class ConsumerSocketTest extends PHPUnit_Framework_TestCase {
 
   function setUp() {
     date_default_timezone_set("UTC");
-    $this->client = new Segment_Client("oq0vdlg7yi",
+    $this->client = new SegmentIo_Client("oq0vdlg7yi",
                                           array("consumer" => "socket"));
   }
 
@@ -51,7 +51,7 @@ class ConsumerSocketTest extends PHPUnit_Framework_TestCase {
   }
 
   function testScreen(){
-    $this->assertTrue($this->client->page(array(
+    $this->assertTrue($this->client->screen(array(
       "anonymousId" => "anonymousId",
       "name" => "grand theft auto",
       "category" => "socket",
@@ -67,7 +67,7 @@ class ConsumerSocketTest extends PHPUnit_Framework_TestCase {
   }
 
   function testShortTimeout() {
-    $client = new Segment_Client("oq0vdlg7yi",
+    $client = new SegmentIo_Client("oq0vdlg7yi",
                                    array( "timeout"  => 0.01,
                                           "consumer" => "socket" ));
 
@@ -85,7 +85,7 @@ class ConsumerSocketTest extends PHPUnit_Framework_TestCase {
   }
 
   function testProductionProblems() {
-    $client = new Segment_Client("x", array(
+    $client = new SegmentIo_Client("x", array(
         "consumer"      => "socket",
         "error_handler" => function () { throw new Exception("Was called"); }));
 
@@ -104,7 +104,7 @@ class ConsumerSocketTest extends PHPUnit_Framework_TestCase {
                               throw new Exception("Response is not 400"); }
     );
 
-    $client = new Segment_Client("x", $options);
+    $client = new SegmentIo_Client("x", $options);
 
     # Should error out with debug on.
     $client->track(array("user_id" => "some-user", "event" => "Socket PHP Event"));
@@ -118,7 +118,7 @@ class ConsumerSocketTest extends PHPUnit_Framework_TestCase {
       "consumer" => "socket"
     );
 
-    $client = new Segment_Client("testsecret", $options);
+    $client = new SegmentIo_Client("testsecret", $options);
 
     $big_property = "";
 
@@ -132,6 +132,22 @@ class ConsumerSocketTest extends PHPUnit_Framework_TestCase {
       "properties" => array("big_property" => $big_property)
     )));
 
+    $client->__destruct();
+  }
+
+  /**
+   * @expectedException \RuntimeException
+   */
+  function testConnectionError() {
+    $client = new SegmentIo_Client("x", array(
+      "consumer"      => "socket",
+      "host"          => "api.segment.ioooooo",
+      "error_handler" => function ($errno, $errmsg) {
+        throw new \RuntimeException($errmsg, $errno);
+      },
+    ));
+
+    $client->track(array("user_id" => "some-user", "event" => "Event"));
     $client->__destruct();
   }
 }

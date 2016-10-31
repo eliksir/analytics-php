@@ -1,4 +1,68 @@
 
+1.4.2 / 2016-07-11
+==================
+
+  * remove the extra -e from echo in makefile
+
+1.4.1 / 2016-07-11
+==================
+
+  * use a more portable shebang
+
+1.4.0 / 2016-07-11
+==================
+
+  * adding a simple wrapper CLI
+  * explicitly declare library version in global scope during creating new release to allow using library with custom autoload (composer for example)
+
+1.3.0 / 2016-04-05
+==================
+
+  * Introducing libcurl consumer
+  * Change Consumer to protected instead of private
+
+1.2.7 / 2016-03-04
+==================
+
+  * adding global
+
+1.2.6 / 2016-03-04
+==================
+
+  * fix version
+
+1.2.5 / 2016-03-04
+==================
+
+  * Adding release script, fixing version
+  * Pass back ->flush() result to allow caller code know if flushed successfully
+
+1.2.4 / 2016-02-17
+=============
+
+  * core: fix error name
+  * send: make send.php executable
+  * socket: adding fix for FIN packets from remote
+
+1.2.3 / 2016-02-01
+==================
+
+  * instead of using just is_int and is_float for checking timestamp, use filter_var since that can detect string ints and floats - if its not a string or float, consider it might be a ISO8601 or some other string, so use strtotime() to support other strings
+
+1.2.1 / 2015-12-29
+==================
+
+  * socket open error checking fix
+  * Fix batch size check before flushing tracking queue
+  * Fix bug in send.php
+
+1.2.0 / 2015-04-27
+==================
+
+ * removing outdated test
+ * enabling ssl by default
+ * socket: bump timeout to 5s
+
 1.1.3 / 2015-03-03
 ==================
 
